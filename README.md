@@ -1,2 +1,2 @@
 # uW
-UnfoldingWord Resources
+* Scripts for converting UnfoldingWord Resources for use within Paratext
