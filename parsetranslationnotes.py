@@ -72,8 +72,8 @@ def gdf_to_usfm_each(gdf):
   # print(gdf[group_by_cols + ["Index", "GroupOrder"]].head(20))
   df = gdf.reset_index(drop=True)
 
-  # usfm_head = "\\id {0}\n\\c {1}\n\\p\n\\v {2}\n\\b"
-  usfm_each = "\\tr\n\\tc1 {0}\n\\tc2 {1}\n\\tc3 {2}\n\\tr\n\\tc1-3 {3}" if use_newline else "\\tr \\tc1 {0} \\tc2 {1} \\tc3 {2}\n\\tr \\tc1-3 {3}"
+  usfm_each = "\\tr\n\\tc1 {0}\n\\tc2 {1}\n\\tc3 {2}\n\\tr\n\\tc1-3 {3}" if use_newline \
+              else "\\tr \\tc1 {0} \\tc2 {1} \\tc3 {2}\n\\tr \\tc1-3 {3}"
 
   verse = None
   chapter = None
@@ -111,13 +111,13 @@ def df_to_usfm(df, sep_group=False): # sep_group flag when true will separate ea
       output += ("\n\\c {0}\n".format(ch))
       vs = []
     vs.append(each[1])
-    # print(i[0], i[1])
+
   output += ("\n\\p\n".join(vs))
   return (output)
 
 """### _df_to_usfm_ Output"""
 
-for src_file in src_files: # Let's test on Titus first. Once the code functions, you can remove the slicing operation, so that it will convert the entire set of files.
+for src_file in src_files: 
     # Fetch data from Url
     s = requests.get(src_path + src_file).content
     # Load pandas DataFrame
@@ -132,32 +132,36 @@ for src_file in src_files: # Let's test on Titus first. Once the code functions,
 
     # Convert tnotes dataframe to usfm data
     tnotes_usfm = df_to_usfm(tnotes, sep_group=True)
+    
     # Save the usfm data to the following file path
     save_file = "{0}.usfm".format(src_file.split('.')[0])
     with open(save_file, "w", encoding="utf-8") as f:
       f.write(tnotes_usfm)
 
-# """# Solution Sample Output"""
+"""# Solution Sample Output
 
-# s = requests.get(src_path + src_files[3:4][0]).content
-# tnotes = pd.read_csv(io.StringIO(s.decode('utf-8')), delimiter=sep)
+### Load test data (Letter to Titus: "TIT") for Sample output
+"""
 
-# """### Display sample records in DataFrame"""
+s = requests.get(src_path + src_files[3:4][0]).content
+tnotes = pd.read_csv(io.StringIO(s.decode('utf-8')), delimiter=sep)
 
-# tnotes.head(20)
+"""### Display sample records in DataFrame"""
 
-# """### Describe dataset"""
+tnotes.head(20)
 
-# "Books", tnotes.Book.unique(), "Chapters", tnotes.Chapter.unique()
+"""### Describe dataset"""
 
-# """### DataFrame column types"""
+"Books", tnotes.Book.unique(), "Chapters", tnotes.Chapter.unique()
 
-# tnotes.dtypes
+"""### DataFrame column types"""
 
-# """### Grouped by Book, Chapter and Verse"""
+tnotes.dtypes
 
-# tnotes.groupby(group_by_cols).describe().head(20)
+"""### Grouped by Book, Chapter and Verse"""
 
-# """### Iterate through each file and apply the function"""
+tnotes.groupby(group_by_cols).describe().head(20)
 
-# print(df_to_usfm(tnotes, sep_group=True))    # This function can be used in the loop above where we read the data from input tsv files
+"""### Iterate through each file and apply the function"""
+
+print(df_to_usfm(tnotes, sep_group=True))    # This function can be used in the loop above where we read the data from input tsv files
